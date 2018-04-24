@@ -1,13 +1,11 @@
-﻿using System.Diagnostics;
+﻿using RemoteTorrentServer.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace RemoteTorrentServer.Services.Contracts
 {
     public interface IClientService
     {
-        Process GetProcess();
-
-        string DownloadLocation { get; set; }
-
-        void Kill();
+        Task<List<Torrent>> GetAllTorrentsAsync();
     }
 }

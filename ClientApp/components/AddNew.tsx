@@ -1,9 +1,10 @@
 ﻿import * as React from 'react';
-import { Link, NavLink, RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps } from 'react-router';
 
-export class AddNew extends React.Component<RouteComponentProps<{}>, { }> {
+export class AddNew extends React.Component<RouteComponentProps<{}>, {}> {
     public render() {
-        <p>Add New</p>
-    
+        return (
+            <p>Add New?</p>
+        )
     };
 };

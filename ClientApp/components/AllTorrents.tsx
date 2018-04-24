@@ -5,31 +5,18 @@ import 'isomorphic-fetch';
 interface AllTorrentsState {
     torrents : Torrent[];
     loading: boolean;
-    downloadLocation: string;
-}
-
-interface TorrentConfig {
-    downloadLocation: string;
 }
 
 export class AllTorrents extends React.Component<RouteComponentProps<{}>, AllTorrentsState> {
     constructor() {
         super();
-        this.state = { torrents: [], loading: true, downloadLocation: '' };
+        this.state = { torrents: [], loading: true };
 
         // Get torrent list
         fetch('api/torrent')
             .then(response => response.json() as Promise<Torrent[]>)
             .then(data => {
                 this.setState({ torrents: data, loading: false });
-            });
-
-        // Get download location
-        fetch('api/torrent/download-location')
-            .then(res => res.json() as Promise<TorrentConfig>)
-            .then(config => {
-                console.log(location);
-                this.setState({ downloadLocation: config.downloadLocation });
             });
     }
 
@@ -41,7 +28,6 @@ export class AllTorrents extends React.Component<RouteComponentProps<{}>, AllTor
         return <div>
             <h1>All Torrents</h1>
             {contents}
-            <p>Downloading to: { this.state.downloadLocation }.</p>
         </div>;
     }
 
@@ -55,10 +41,10 @@ export class AllTorrents extends React.Component<RouteComponentProps<{}>, AllTor
             </thead>
             <tbody>
                 { torrents.map(torrent =>
-                <tr key={ torrent.id }>
-                    <td>{ torrent.torrentName }</td>
-                    <td>{ torrent.status }</td>
-                    <td>{ torrent.magnetLink }</td>
+                <tr key={ torrent.hash }>
+                    <td>{ torrent.hash}</td>
+                    <td>{ torrent.name}</td>
+                    <td>{ torrent.state}</td>
                 </tr>
             )}
             </tbody>
@@ -67,8 +53,23 @@ export class AllTorrents extends React.Component<RouteComponentProps<{}>, AllTor
 }
 
 interface Torrent {
-    id: number;
-    torrentName: string;
-    magnetLink: string;
-    status: number;
+    hash: string;
+    name: string;
+    size: number;
+    progress: number;
+    dlspeed: number;
+    upspeed: number;
+    priority: number;
+    num_seeds: number;
+    num_complete: number;
+    num_leechs: number;
+    num_incomplete: number;
+    ratio: number;
+    eta: number;
+    seq_dl: boolean;
+    f_l_piece_prio: boolean;
+    category: string;
+    super_seeding: boolean;
+    force_start: boolean;
+    state: string;
 }

@@ -19,13 +19,7 @@ namespace RemoteTorrentServer.Controllers
         [HttpGet]
         public async Task<List<Torrent>> GetAllTorrentsAsync()
         {
-            return torrentService.GetAllTorrentsAsync();
-        }
-
-        [HttpGet("download-location")]
-        public IActionResult GetDownloadLocation()
-        {
-            return new JsonResult(new { downloadLocation = torrentService.GetDownloadLocation() });
+            return await torrentService.GetAllTorrentsAsync();
         }
 
         [HttpPost]
