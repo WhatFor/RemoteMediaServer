@@ -6,6 +6,8 @@ namespace RemoteTorrentServer.Services.Contracts
 {
     public interface IClientService
     {
+        Task<Torrent> AddNewTorrentByMagnetAsync(string magnet);
+
         Task<List<Torrent>> GetAllTorrentsAsync();
     }
 }

@@ -33,6 +33,33 @@ namespace RemoteTorrentServer.Services
         }
 
         /// <summary>
+        /// Adds a new torrent magnet link to the client.
+        /// </summary>
+        /// <param name="magnet">The magnet string</param>
+        /// <returns>The created torrent element</returns>
+        public async Task<Torrent> AddNewTorrentByMagnetAsync(string magnet)
+        {
+            await AssignAuthCookie();
+
+            // Format string as a suitable form submission body
+            var formData = new MultipartFormDataContent();
+            formData.Headers.ContentType = MediaTypeHeaderValue.Parse("application/x-www-form-urlencoded");
+            formData.Add(new StringContent(System.Net.WebUtility.HtmlEncode(magnet)), "urls");
+
+            var response = await PostAsync("command/download", formData);
+
+            if (IsSuccess(response))
+            {
+                // TODO: fetch the created torrent
+                return null;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
         /// Fetch a list of all of the torrents in qBittorrent.
         /// </summary>
         /// <returns>List<Torrent></returns>

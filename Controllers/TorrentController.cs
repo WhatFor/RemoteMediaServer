@@ -16,14 +16,14 @@ namespace RemoteTorrentServer.Controllers
             this.torrentService = torrentService;
         }
 
-        [HttpGet]
+        [HttpGet("all")]
         public async Task<List<Torrent>> GetAllTorrentsAsync()
         {
             return await torrentService.GetAllTorrentsAsync();
         }
 
-        [HttpPost]
-        public async Task<Torrent> AddNewTorrentAsync(string magnetLink, string downloadLocation = null, bool autoStart = true)
+        [HttpPost("magnet")]
+        public async Task<Torrent> AddNewTorrentAsync([FromForm]string magnetLink, [FromForm]string downloadLocation = null, [FromForm]bool autoStart = true)
         {
             return await torrentService.ImportTorrentAsync(magnetLink);
         }

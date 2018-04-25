@@ -1,4 +1,7 @@
-﻿namespace RemoteTorrentServer.Models
+﻿using RemoteTorrentServer.Extensions;
+using System.ComponentModel.DataAnnotations;
+
+namespace RemoteTorrentServer.Models
 {
     /// <summary>
     /// A representation of the Torrent model returned from qBittorrent.
@@ -99,5 +102,10 @@
         /// State of the torrent.
         /// </summary>
         public TorrentStatus State { get; set; }
+
+        /// <summary>
+        /// Get the State enum value as it's display value.
+        /// </summary>
+        public string StateDisplay => State.GetAttribute<DisplayAttribute>().Name;
     }
 }

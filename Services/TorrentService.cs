@@ -19,9 +19,9 @@ namespace RemoteTorrentServer.Services
             return await client.GetAllTorrentsAsync();
         }
 
-        public Task<Torrent> ImportTorrentAsync(string magnetLink, string downloadLocation = null, bool autoStart = true)
+        public async Task<Torrent> ImportTorrentAsync(string magnetLink, string downloadLocation = null, bool autoStart = true)
         {
-            throw new System.NotImplementedException();
+            return await client.AddNewTorrentByMagnetAsync(magnetLink);
         }
     }
 }

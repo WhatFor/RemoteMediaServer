@@ -13,7 +13,7 @@ export class AllTorrents extends React.Component<RouteComponentProps<{}>, AllTor
         this.state = { torrents: [], loading: true };
 
         // Get torrent list
-        fetch('api/torrent')
+        fetch('api/torrent/all')
             .then(response => response.json() as Promise<Torrent[]>)
             .then(data => {
                 this.setState({ torrents: data, loading: false });
@@ -35,16 +35,23 @@ export class AllTorrents extends React.Component<RouteComponentProps<{}>, AllTor
         return <table className='table'>
             <thead>
                 <tr>
+                    <th>Hash</th>
                     <th>Name</th>
-                    <th>Status</th>
+                    <th>State</th>
+                    <th>D</th>
+                    <th>U</th>
+                    <th>Ratio</th>
                 </tr>
             </thead>
             <tbody>
                 { torrents.map(torrent =>
                 <tr key={ torrent.hash }>
-                    <td>{ torrent.hash}</td>
-                    <td>{ torrent.name}</td>
-                    <td>{ torrent.state}</td>
+                    <td>{ torrent.hash }</td>
+                    <td>{ torrent.name }</td>
+                    <td>{ torrent.stateDisplay }</td>
+                    <td>{ torrent.dlspeed }</td>
+                    <td>{ torrent.upspeed }</td>
+                    <td>{ torrent.ratio }</td>
                 </tr>
             )}
             </tbody>
@@ -71,5 +78,6 @@ interface Torrent {
     category: string;
     super_seeding: boolean;
     force_start: boolean;
-    state: string;
+    state: number;
+    stateDisplay: string;
 }

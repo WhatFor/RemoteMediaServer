@@ -6,5 +6,5 @@ import { AddNew } from './components/AddNew';
 
 export const routes = <Layout>
     <Route exact path='/' component={ AllTorrents } />
-    <Route path='/add-new' component={ AddNew } />
+    <Route path='/addnew' component={ AddNew } />
 </Layout>;
