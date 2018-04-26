@@ -23,7 +23,7 @@ namespace RemoteTorrentServer.Controllers
         }
 
         [HttpPost("magnet")]
-        public async Task<Torrent> AddNewTorrentAsync([FromForm]string magnetLink, [FromForm]string downloadLocation = null, [FromForm]bool autoStart = true)
+        public async Task<Torrent> AddNewTorrentAsync([FromBody]string magnetLink, [FromBody]string downloadLocation = null, [FromBody]bool autoStart = true)
         {
             return await torrentService.ImportTorrentAsync(magnetLink);
         }

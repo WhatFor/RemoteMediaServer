@@ -36,7 +36,9 @@ export class AddNew extends React.Component<RouteComponentProps<{}>, AddNewState
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ magnetLink: this.state.magnet }),
-            });
+            })
+                .then(/**/)
+                .catch(/**/);
         };
 
         return (
