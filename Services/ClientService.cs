@@ -25,9 +25,7 @@ namespace RemoteTorrentServer.Services
         private readonly qBittorrentConfig qConfig;
         private HttpClient http;
 
-        public ClientService(
-            IOptions<qBittorrentConfig> options,
-            IHttpContextAccessor httpContextAccessor)
+        public ClientService(IOptions<qBittorrentConfig> options)
         {
             qConfig = options.Value;
             http = GetHttpClient().GetAwaiter().GetResult();

@@ -18,7 +18,7 @@ export class NavMenu extends React.Component<{}, {}> {
                 <div className='navbar-collapse collapse'>
                     <ul className='nav navbar-nav'>
                         <li>
-                            <NavLink to={ '/fetchdata' } activeClassName='active'>
+                            <NavLink to={ '/' } activeClassName='active'>
                                 <span className='glyphicon glyphicon-th-list'></span> View All Torrents 
                             </NavLink>
                         </li>

@@ -35,23 +35,25 @@ export class AllTorrents extends React.Component<RouteComponentProps<{}>, AllTor
         return <table className='table'>
             <thead>
                 <tr>
-                    <th>Hash</th>
+                    <th>Size</th>
                     <th>Name</th>
                     <th>State</th>
                     <th>D</th>
                     <th>U</th>
                     <th>Ratio</th>
+                    <th>ETA</th>
                 </tr>
             </thead>
             <tbody>
                 { torrents.map(torrent =>
                 <tr key={ torrent.hash }>
-                    <td>{ torrent.hash }</td>
+                    <td>{ torrent.size }</td>
                     <td>{ torrent.name }</td>
                     <td>{ torrent.stateDisplay }</td>
-                    <td>{ torrent.dlspeed }</td>
-                    <td>{ torrent.upspeed }</td>
+                    <td>{ torrent.dlSpeed }</td>
+                    <td>{ torrent.upSpeed }</td>
                     <td>{ torrent.ratio }</td>
+                    <td>{ torrent.eta }</td>
                 </tr>
             )}
             </tbody>
@@ -64,8 +66,8 @@ interface Torrent {
     name: string;
     size: number;
     progress: number;
-    dlspeed: number;
-    upspeed: number;
+    dlSpeed: number;
+    upSpeed: number;
     priority: number;
     num_seeds: number;
     num_complete: number;

@@ -21,7 +21,7 @@ namespace RemoteTorrentServer.Models
         /// <summary>
         /// Torrent total size in bytes.
         /// </summary>
-        public double Size { get; set; }
+        public ulong Size { get; set; }
 
         /// <summary>
         /// Total progress percentage.
@@ -31,12 +31,12 @@ namespace RemoteTorrentServer.Models
         /// <summary>
         /// Download speed, bytes per second.
         /// </summary>
-        public int DLSpeed { get; set; }
+        public ulong DLSpeed { get; set; }
 
         /// <summary>
         /// Upload speed, bytes per second.
         /// </summary>
-        public int UpSpeed { get; set; }
+        public ulong UpSpeed { get; set; }
 
         /// <summary>
         /// Torrent priority. Returns -1 if queueing is disabled, or torrent is in seed mode.
