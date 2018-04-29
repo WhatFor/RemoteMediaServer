@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.Webpack;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using RemoteTorrentServer.Extensions;
 using RemoteTorrentServer.Models.Configuration;
 using RemoteTorrentServer.Services;
 using RemoteTorrentServer.Services.Contracts;

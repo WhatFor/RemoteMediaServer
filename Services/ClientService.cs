@@ -6,9 +6,12 @@ using RemoteTorrentServer.Models.Configuration;
 using RemoteTorrentServer.Services.Contracts;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace RemoteTorrentServer.Services
@@ -17,19 +20,17 @@ namespace RemoteTorrentServer.Services
     /// An extension of HttpClient, providing methods for connecting with the
     /// qBittorrent Web API.
     /// </summary>
-    public class ClientService : HttpClient, IClientService
+    public class ClientService : IClientService
     {
         private readonly qBittorrentConfig qConfig;
-        private readonly HttpContext userHttpContext;
+        private HttpClient http;
 
         public ClientService(
             IOptions<qBittorrentConfig> options,
             IHttpContextAccessor httpContextAccessor)
         {
             qConfig = options.Value;
-            userHttpContext = httpContextAccessor.HttpContext;
-
-            SetBaseAddress();
+            http = GetHttpClient().GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -39,14 +40,13 @@ namespace RemoteTorrentServer.Services
         /// <returns>The created torrent element</returns>
         public async Task<Torrent> AddNewTorrentByMagnetAsync(string magnet)
         {
-            await AssignAuthCookie();
-
             // Format string as a suitable form submission body
             var formData = new MultipartFormDataContent();
             formData.Headers.ContentType = MediaTypeHeaderValue.Parse("application/x-www-form-urlencoded");
-            formData.Add(new StringContent(System.Net.WebUtility.HtmlEncode(magnet)), "urls");
+            magnet = magnet.Replace("&", "%26");
+            formData.Add(new StreamContent(new MemoryStream(Encoding.UTF8.GetBytes(magnet))), "\"urls\"");
 
-            var response = await PostAsync("command/download", formData);
+            var response = await http.PostAsync("command/download", formData);
 
             if (IsSuccess(response))
             {
@@ -65,9 +65,7 @@ namespace RemoteTorrentServer.Services
         /// <returns>List<Torrent></returns>
         public async Task<List<Torrent>> GetAllTorrentsAsync()
         {
-            await AssignAuthCookie();
-
-            var response = await GetAsync("query/torrents");
+            var response = await http.GetAsync("query/torrents");
 
             if (IsSuccess(response))
             {
@@ -81,18 +79,31 @@ namespace RemoteTorrentServer.Services
             }
         }
 
+        private async Task<HttpClient> GetHttpClient()
+        {
+            var cookieContainer = new CookieContainer();
+            var handler = new HttpClientHandler
+            {
+                CookieContainer = cookieContainer
+            };
+            var client = new HttpClient(handler);
+
+            var authCookie = await GetAuthCookie();
+            var baseAddress = GetBaseAddress();
+            cookieContainer.Add(baseAddress, authCookie);
+            client.BaseAddress = baseAddress;
+            return client;
+        }
+
         /// <summary>
         /// If the user HTTP request currently does not have a authorization cookie,
         /// we need to sign in and get the cookie.
         /// </summary>
-        private async Task AssignAuthCookie()
+        private async Task<Cookie> GetAuthCookie()
         {
             const string COOKIE_KEY = "SID";
-
-            if (userHttpContext.Request.Cookies.ContainsKey(COOKIE_KEY)) return;
-
             var cookieVal = await GetAuthorizationCookie();
-            userHttpContext.Response.Cookies.Append(COOKIE_KEY, cookieVal);
+            return new Cookie(COOKIE_KEY, cookieVal);
         }
 
         /// <summary>
@@ -107,25 +118,28 @@ namespace RemoteTorrentServer.Services
                 new KeyValuePair<string, string>("password", qConfig.Password),
             });
 
-            var response = await PostAsync("login", content);
-
-            if (IsSuccess(response))
+            using (var authClient = new HttpClient() { BaseAddress = GetBaseAddress() })
             {
-                if (response.Headers.TryGetValues("Set-Cookie", out var header))
-                {
-                    return header.First()?.ToString()?.Substring(4, 32);
-                }
-            }
+                var response = await authClient.PostAsync("login", content);
 
-            return string.Empty;
+                if (IsSuccess(response))
+                {
+                    if (response.Headers.TryGetValues("Set-Cookie", out var header))
+                    {
+                        return header.First()?.ToString()?.Substring(4, 32);
+                    }
+                }
+
+                return string.Empty;
+            }
         }
 
         /// <summary>
         /// Sets the target address for the HttpClient.
         /// </summary>
-        private void SetBaseAddress()
+        private Uri GetBaseAddress()
         {
-            BaseAddress = new Uri(qConfig.ServiceUri, UriKind.Absolute);
+            return new Uri(qConfig.ServiceUri, UriKind.Absolute);
         }
 
         /// <summary>
