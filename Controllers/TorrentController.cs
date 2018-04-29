@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RemoteTorrentServer.Models;
+using RemoteTorrentServer.Models.DTO;
 using RemoteTorrentServer.Services.Contracts;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -23,9 +24,9 @@ namespace RemoteTorrentServer.Controllers
         }
 
         [HttpPost("magnet")]
-        public async Task<Torrent> AddNewTorrentAsync([FromBody]string magnetLink, [FromBody]string downloadLocation = null, [FromBody]bool autoStart = true)
+        public async Task<Torrent> AddNewTorrentAsync([FromBody]AddNewTorrentDto addNewTorrent)
         {
-            return await torrentService.ImportTorrentAsync(magnetLink);
+            return await torrentService.ImportTorrentAsync(addNewTorrent.MagnetLink);
         }
     }
 }

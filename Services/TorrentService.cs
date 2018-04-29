@@ -21,6 +21,8 @@ namespace RemoteTorrentServer.Services
 
         public async Task<Torrent> ImportTorrentAsync(string magnetLink, string downloadLocation = null, bool autoStart = true)
         {
+            if (magnetLink == null) return null;
+
             return await client.AddNewTorrentByMagnetAsync(magnetLink);
         }
     }

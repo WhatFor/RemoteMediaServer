@@ -32,13 +32,25 @@ export class AddNew extends React.Component<RouteComponentProps<{}>, AddNewState
         const submitMagnet = (e: FormEvent<HTMLFormElement>) => {
             e.preventDefault();
 
+            var data = JSON.stringify({
+                magnetLink: this.state.magnet,
+                downloadLocation: this.state.downloadLocation,
+                autoStart: this.state.autoStart
+            });
+
             fetch('/api/torrent/magnet', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ magnetLink: this.state.magnet }),
+                body: data,
             })
-                .then(/**/)
-                .catch(/**/);
+                .then(function (response) {
+                    console.log(response);
+                    alert('succ');
+                })
+                .catch(function (err) {
+                    console.log(err);
+                    alert("fail");
+                });
         };
 
         return (

@@ -91,7 +91,8 @@ namespace RemoteTorrentServer.Services
 
             if (userHttpContext.Request.Cookies.ContainsKey(COOKIE_KEY)) return;
 
-            userHttpContext.Response.Cookies.Append(COOKIE_KEY, await GetAuthorizationCookie());
+            var cookieVal = await GetAuthorizationCookie();
+            userHttpContext.Response.Cookies.Append(COOKIE_KEY, cookieVal);
         }
 
         /// <summary>
