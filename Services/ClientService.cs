@@ -40,11 +40,12 @@ namespace RemoteTorrentServer.Services
         /// <returns>The created torrent element</returns>
         public async Task<Torrent> AddNewTorrentByMagnetAsync(string magnet)
         {
+            var BOUNDARY = Guid.NewGuid().ToString();
+
             // Format string as a suitable form submission body
-            var formData = new MultipartFormDataContent();
-            formData.Headers.ContentType = MediaTypeHeaderValue.Parse("application/x-www-form-urlencoded");
+            var formData = new MultipartFormDataContent(BOUNDARY);
             magnet = magnet.Replace("&", "%26");
-            formData.Add(new StreamContent(new MemoryStream(Encoding.UTF8.GetBytes(magnet))), "\"urls\"");
+            formData.Add(new StreamContent(new MemoryStream(Encoding.UTF8.GetBytes(magnet))), "urls");
 
             var response = await http.PostAsync("command/download", formData);
 
